@@ -1,38 +1,38 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import { FaPlay, FaCode } from 'react-icons/fa';
+// import { makeStyles } from '@material-ui/core/styles';
+// import { FaPlay, FaCode } from 'react-icons/fa';
 import Fade from 'react-reveal/Fade';
 
 import placeholder from '../../../assets/png/placeholder.png';
 import './SingleProject.css';
 
 function SingleProject({ id, name, desc, tags, code, demo, image, theme }) {
-    const useStyles = makeStyles((t) => ({
-        iconBtn: {
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: 40,
-            height: 40,
-            borderRadius: 50,
-            border: `2px solid ${theme.tertiary}`,
-            color: theme.tertiary,
-            transition: 'all 0.2s',
-            '&:hover': {
-                backgroundColor: theme.secondary,
-                color: theme.primary,
-                transform: 'scale(1.1)',
-                border: `2px solid ${theme.secondary}`,
-            },
-        },
-        icon: {
-            fontSize: '1.1rem',
-            transition: 'all 0.2s',
-            '&:hover': {},
-        },
-    }));
+    // const useStyles = makeStyles((t) => ({
+    //     iconBtn: {
+    //         display: 'flex',
+    //         alignItems: 'center',
+    //         justifyContent: 'center',
+    //         width: 40,
+    //         height: 40,
+    //         borderRadius: 50,
+    //         border: `2px solid ${theme.tertiary}`,
+    //         color: theme.tertiary,
+    //         transition: 'all 0.2s',
+    //         '&:hover': {
+    //             backgroundColor: theme.secondary,
+    //             color: theme.primary,
+    //             transform: 'scale(1.1)',
+    //             border: `2px solid ${theme.secondary}`,
+    //         },
+    //     },
+    //     icon: {
+    //         fontSize: '1.1rem',
+    //         transition: 'all 0.2s',
+    //         '&:hover': {},
+    //     },
+    // }));
 
-    const classes = useStyles();
+    // const classes = useStyles();
 
     return (
         <Fade bottom>
@@ -50,7 +50,7 @@ function SingleProject({ id, name, desc, tags, code, demo, image, theme }) {
                     </h2>
                     <img src={image ? image : placeholder} alt={name} />
                     <div className='project--showcaseBtn'>
-                        <a
+                        {/* <a
                             href={demo}
                             target='_blank'
                             rel='noreferrer'
@@ -68,8 +68,8 @@ function SingleProject({ id, name, desc, tags, code, demo, image, theme }) {
                                 className={classes.icon}
                                 aria-label='Demo'
                             />
-                        </a>
-                        <a
+                        </a> */}
+                        {/* <a
                             href={code}
                             target='_blank'
                             rel='noreferrer'
@@ -87,7 +87,7 @@ function SingleProject({ id, name, desc, tags, code, demo, image, theme }) {
                                 className={classes.icon}
                                 aria-label='Code'
                             />
-                        </a>
+                        </a> */}
                     </div>
                 </div>
                 <p
