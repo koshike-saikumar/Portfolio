@@ -5,7 +5,7 @@ import { Navbar, Footer, Landing, About, Skills, Education, Experience, Contacts
 import { headerData } from '../../data/headerData'
 
 function Main() {
-    return (
+    return (  
         <div>
             <Helmet>
                 <title>{headerData.name} - Porfolio</title>
