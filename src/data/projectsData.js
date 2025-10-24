@@ -1,4 +1,4 @@
-import one from './image.png'
+import one from '../assets/svg/projects/Gemini_Generated_Image_fbnft2fbnft2fbnf.svg'
 import two from '../assets/svg/projects/two.svg'
 import three from '../assets/svg/projects/three.svg'
 import four from '../assets/svg/projects/four.svg'

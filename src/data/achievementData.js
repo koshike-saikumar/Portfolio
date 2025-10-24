@@ -7,7 +7,7 @@ export const achievementData = {
     details: 'I had coaching and preparation for the Java certification exam, and I successfully earned my certificate in December 2022.',
     date: 'Dec 2022',
     field: 'Software Development',
-    image: 'https://images.unsplash.com/photo-1573141597928-403fcee0e056?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=667&q=80'
+    image: 'https://miro.medium.com/v2/0*gtY-llyEbkeoS1Sp.png'
 },
         // {
         //     id : 2,
