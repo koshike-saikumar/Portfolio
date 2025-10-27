@@ -1,9 +1,9 @@
 import React, { useContext, useState } from 'react';
 import { Snackbar, IconButton, SnackbarContent } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import axios from 'axios';
-import isEmail from 'validator/lib/isEmail';
 import { makeStyles } from '@material-ui/core/styles';
+import emailjs from 'emailjs-com';
+
 import {
     FaTwitter,
     FaLinkedinIn,
@@ -17,36 +17,29 @@ import {
     FaGitlab,
     FaMediumM,
 } from 'react-icons/fa';
-import { AiOutlineSend, AiOutlineCheckCircle } from 'react-icons/ai';
+import { AiOutlineSend } from 'react-icons/ai';
 import { FiPhone, FiAtSign } from 'react-icons/fi';
 
 import { ThemeContext } from '../../contexts/ThemeContext';
-
 import { socialsData } from '../../data/socialsData';
 import { contactsData } from '../../data/contactsData';
 import './Contacts.css';
 
 function Contacts() {
     const [open, setOpen] = useState(false);
-
+    const [errMsg, setErrMsg] = useState('');
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [message, setMessage] = useState('');
 
-    const [success, setSuccess] = useState(false);
-    const [errMsg, setErrMsg] = useState('');
-
     const { theme } = useContext(ThemeContext);
 
     const handleClose = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-
+        if (reason === 'clickaway') return;
         setOpen(false);
     };
 
-    const useStyles = makeStyles((t) => ({
+    const useStyles = makeStyles(() => ({
         input: {
             border: `4px solid ${theme.primary80}`,
             backgroundColor: `${theme.secondary}`,
@@ -54,9 +47,7 @@ function Contacts() {
             fontFamily: 'var(--primaryFont)',
             fontWeight: 500,
             transition: 'border 0.2s ease-in-out',
-            '&:focus': {
-                border: `4px solid ${theme.primary600}`,
-            },
+            '&:focus': { border: `4px solid ${theme.primary600}` },
         },
         message: {
             border: `4px solid ${theme.primary80}`,
@@ -65,9 +56,7 @@ function Contacts() {
             fontFamily: 'var(--primaryFont)',
             fontWeight: 500,
             transition: 'border 0.2s ease-in-out',
-            '&:focus': {
-                border: `4px solid ${theme.primary600}`,
-            },
+            '&:focus': { border: `4px solid ${theme.primary600}` },
         },
         label: {
             backgroundColor: `${theme.secondary}`,
@@ -128,52 +117,53 @@ function Contacts() {
 
     const classes = useStyles();
 
+    // ✅ EmailJS Integration
     const handleContactForm = (e) => {
         e.preventDefault();
 
-        if (name && email && message) {
-            if (isEmail(email)) {
-                const responseData = {
-                    name: name,
-                    email: email,
+        if (!name || !email || !message) {
+            setErrMsg('Enter all the fields');
+            setOpen(true);
+            return;
+        }
+
+        emailjs
+            .send(
+                'service_ceyawow',   // 👉 replace with your EmailJS Service ID
+                'template_qcr51pc',  // 👉 replace with your Template ID
+                {
+                    from_name: name,
+                    from_email: email,
                     message: message,
-                };
-
-                axios.post(contactsData.sheetAPI, responseData).then((res) => {
-                    console.log('success');
-                    setSuccess(true);
-                    setErrMsg('');
-
+                },
+                'zvM2ZuKaBCNOTtCG2'    // 👉 replace with your EmailJS Public Key
+            )
+            .then(
+                (response) => {
+                    console.log('SUCCESS!', response.status, response.text);
+                    setErrMsg('Message sent successfully!');
+                    setOpen(true);
                     setName('');
                     setEmail('');
                     setMessage('');
-                    setOpen(false);
-                });
-            } else {
-                setErrMsg('Invalid email');
-                setOpen(true);
-            }
-        } else {
-            setErrMsg('Enter all the fields');
-            setOpen(true);
-        }
+                },
+                (error) => {
+                    console.error('FAILED...', error);
+                    setErrMsg('Failed to send message. Try again later.');
+                    setOpen(true);
+                }
+            );
     };
 
     return (
-        <div
-            className='contacts'
-            id='contacts'
-            style={{ backgroundColor: theme.secondary }}
-        >
+        <div className='contacts' id='contacts' style={{ backgroundColor: theme.secondary }}>
             <div className='contacts--container'>
                 <h1 style={{ color: theme.primary }}>Contacts</h1>
                 <div className='contacts-body'>
                     <div className='contacts-form'>
                         <form onSubmit={handleContactForm}>
                             <div className='input-container'>
-                                <label htmlFor='Name' className={classes.label}>
-                                    Name
-                                </label>
+                                <label htmlFor='Name' className={classes.label}>Name</label>
                                 <input
                                     placeholder='John Doe'
                                     value={name}
@@ -183,13 +173,9 @@ function Contacts() {
                                     className={`form-input ${classes.input}`}
                                 />
                             </div>
+
                             <div className='input-container'>
-                                <label
-                                    htmlFor='Email'
-                                    className={classes.label}
-                                >
-                                    Email
-                                </label>
+                                <label htmlFor='Email' className={classes.label}>Email</label>
                                 <input
                                     placeholder='John@doe.com'
                                     value={email}
@@ -199,59 +185,30 @@ function Contacts() {
                                     className={`form-input ${classes.input}`}
                                 />
                             </div>
+
                             <div className='input-container'>
-                                <label
-                                    htmlFor='Message'
-                                    className={classes.label}
-                                >
-                                    Message
-                                </label>
+                                <label htmlFor='Message' className={classes.label}>Message</label>
                                 <textarea
-                                    placeholder='Type your message....'
+                                    placeholder='Type your message...'
                                     value={message}
                                     onChange={(e) => setMessage(e.target.value)}
-                                    type='text'
                                     name='Message'
                                     className={`form-message ${classes.message}`}
                                 />
                             </div>
 
                             <div className='submit-btn'>
-                                <button
-                                    type='submit'
-                                    className={classes.submitBtn}
-                                >
-                                    <p>{!success ? 'Send' : 'Sent'}</p>
+                                <button type='submit' className={classes.submitBtn}>
+                                    <p>Send</p>
                                     <div className='submit-icon'>
-                                        <AiOutlineSend
-                                            className='send-icon'
-                                            style={{
-                                                animation: !success
-                                                    ? 'initial'
-                                                    : 'fly 0.8s linear both',
-                                                position: success
-                                                    ? 'absolute'
-                                                    : 'initial',
-                                            }}
-                                        />
-                                        <AiOutlineCheckCircle
-                                            className='success-icon'
-                                            style={{
-                                                display: !success
-                                                    ? 'none'
-                                                    : 'inline-flex',
-                                                opacity: !success ? '0' : '1',
-                                            }}
-                                        />
+                                        <AiOutlineSend className='send-icon' />
                                     </div>
                                 </button>
                             </div>
                         </form>
+
                         <Snackbar
-                            anchorOrigin={{
-                                vertical: 'top',
-                                horizontal: 'center',
-                            }}
+                            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
                             open={open}
                             autoHideDuration={4000}
                             onClose={handleClose}
@@ -280,145 +237,69 @@ function Contacts() {
                     </div>
 
                     <div className='contacts-details'>
-                        <a
-                            href={`mailto:${contactsData.email}`}
-                            className='personal-details'
-                        >
-                            <div className={classes.detailsIcon}>
-                                <FiAtSign />
-                            </div>
-                            <p style={{ color: theme.tertiary }}>
-                                {contactsData.email}
-                            </p>
+                        <a href={`mailto:${contactsData.email}`} className='personal-details'>
+                            <div className={classes.detailsIcon}><FiAtSign /></div>
+                            <p style={{ color: theme.tertiary }}>{contactsData.email}</p>
                         </a>
-                        <a
-                            href={`tel:${contactsData.phone}`}
-                            className='personal-details'
-                        >
-                            <div className={classes.detailsIcon}>
-                                <FiPhone />
-                            </div>
-                            <p style={{ color: theme.tertiary }}>
-                                {contactsData.phone}
-                            </p>
+
+                        <a href={`tel:${contactsData.phone}`} className='personal-details'>
+                            <div className={classes.detailsIcon}><FiPhone /></div>
+                            <p style={{ color: theme.tertiary }}>{contactsData.phone}</p>
                         </a>
-                        {/* <div className='personal-details'>
-                            <div className={classes.detailsIcon}>
-                                <HiOutlineLocationMarker />
-                            </div>
-                            <p style={{ color: theme.tertiary }}>
-                                {contactsData.address}
-                            </p>
-                        </div> */}
 
                         <div className='socialmedia-icons'>
                             {socialsData.twitter && (
-                                <a
-                                    href={socialsData.twitter}
-                                    target='_blank'
-                                    rel='noreferrer'
-                                    className={classes.socialIcon}
-                                >
+                                <a href={socialsData.twitter} target='_blank' rel='noreferrer' className={classes.socialIcon}>
                                     <FaTwitter aria-label='Twitter' />
                                 </a>
                             )}
                             {socialsData.github && (
-                                <a
-                                    href={socialsData.github}
-                                    target='_blank'
-                                    rel='noreferrer'
-                                    className={classes.socialIcon}
-                                >
+                                <a href={socialsData.github} target='_blank' rel='noreferrer' className={classes.socialIcon}>
                                     <FaGithub aria-label='GitHub' />
                                 </a>
                             )}
                             {socialsData.linkedIn && (
-                                <a
-                                    href={socialsData.linkedIn}
-                                    target='_blank'
-                                    rel='noreferrer'
-                                    className={classes.socialIcon}
-                                >
+                                <a href={socialsData.linkedIn} target='_blank' rel='noreferrer' className={classes.socialIcon}>
                                     <FaLinkedinIn aria-label='LinkedIn' />
                                 </a>
                             )}
                             {socialsData.instagram && (
-                                <a
-                                    href={socialsData.instagram}
-                                    target='_blank'
-                                    rel='noreferrer'
-                                    className={classes.socialIcon}
-                                >
+                                <a href={socialsData.instagram} target='_blank' rel='noreferrer' className={classes.socialIcon}>
                                     <FaInstagram aria-label='Instagram' />
                                 </a>
                             )}
                             {socialsData.medium && (
-                                <a
-                                    href={socialsData.medium}
-                                    target='_blank'
-                                    rel='noreferrer'
-                                    className={classes.socialIcon}
-                                >
+                                <a href={socialsData.medium} target='_blank' rel='noreferrer' className={classes.socialIcon}>
                                     <FaMediumM aria-label='Medium' />
                                 </a>
                             )}
                             {socialsData.blogger && (
-                                <a
-                                    href={socialsData.blogger}
-                                    target='_blank'
-                                    rel='noreferrer'
-                                    className={classes.socialIcon}
-                                >
+                                <a href={socialsData.blogger} target='_blank' rel='noreferrer' className={classes.socialIcon}>
                                     <FaBloggerB aria-label='Blogger' />
                                 </a>
                             )}
                             {socialsData.youtube && (
-                                <a
-                                    href={socialsData.youtube}
-                                    target='_blank'
-                                    rel='noreferrer'
-                                    className={classes.socialIcon}
-                                >
+                                <a href={socialsData.youtube} target='_blank' rel='noreferrer' className={classes.socialIcon}>
                                     <FaYoutube aria-label='YouTube' />
                                 </a>
                             )}
                             {socialsData.reddit && (
-                                <a
-                                    href={socialsData.reddit}
-                                    target='_blank'
-                                    rel='noreferrer'
-                                    className={classes.socialIcon}
-                                >
+                                <a href={socialsData.reddit} target='_blank' rel='noreferrer' className={classes.socialIcon}>
                                     <FaRedditAlien aria-label='Reddit' />
                                 </a>
                             )}
                             {socialsData.stackOverflow && (
-                                <a
-                                    href={socialsData.stackOverflow}
-                                    target='_blank'
-                                    rel='noreferrer'
-                                    className={classes.socialIcon}
-                                >
+                                <a href={socialsData.stackOverflow} target='_blank' rel='noreferrer' className={classes.socialIcon}>
                                     <FaStackOverflow aria-label='Stack Overflow' />
                                 </a>
                             )}
                             {socialsData.codepen && (
-                                <a
-                                    href={socialsData.codepen}
-                                    target='_blank'
-                                    rel='noreferrer'
-                                    className={classes.socialIcon}
-                                >
+                                <a href={socialsData.codepen} target='_blank' rel='noreferrer' className={classes.socialIcon}>
                                     <FaCodepen aria-label='CodePen' />
                                 </a>
                             )}
                             {socialsData.gitlab && (
-                                <a
-                                    href={socialsData.gitlab}
-                                    target='_blank'
-                                    rel='noreferrer'
-                                    className={classes.socialIcon}
-                                >
+                                <a href={socialsData.gitlab} target='_blank' rel='noreferrer' className={classes.socialIcon}>
                                     <FaGitlab aria-label='GitLab' />
                                 </a>
                             )}
@@ -426,11 +307,7 @@ function Contacts() {
                     </div>
                 </div>
             </div>
-            <img
-                src={theme.contactsimg}
-                alt='contacts'
-                className='contacts--img'
-            />
+            <img src={theme.contactsimg} alt='contacts' className='contacts--img' />
         </div>
     );
 }
