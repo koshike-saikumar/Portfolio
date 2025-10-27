@@ -74,6 +74,7 @@ import unity from '../assets/svg/skills/unity.svg'
 import wolframalpha from '../assets/svg/skills/wolframalpha.svg'
 
 import canva from '../assets/svg/skills/canva.svg'
+import springboot from '../assets/svg/skills/icons8-spring-boot-48.svg'
 
 
 export const skillsImage = (skill) => {
@@ -225,6 +226,8 @@ export const skillsImage = (skill) => {
             return unity;
         case 'wolframalpha':
             return wolframalpha;
+        case 'springboot':
+            return springboot;
         case 'canva':
             return canva;
         default:
